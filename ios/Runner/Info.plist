@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Selfcoach Mobile</string>
+	<string>SelfCoach</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -45,5 +45,17 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	
+	<!-- HealthKit permissions -->
+	<key>NSHealthShareUsageDescription</key>
+	<string>This app needs access to health data to track your wellness progress and provide personalized health insights.</string>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>This app needs to write health data to track your wellness activities and progress.</string>
+	<key>NSMotionUsageDescription</key>
+	<string>This app uses motion data to track your daily activity and steps.</string>
+	
+	<!-- Location permission for health tracking -->
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>This app uses location data to enhance your fitness tracking during workouts.</string>
 </dict>
 </plist>

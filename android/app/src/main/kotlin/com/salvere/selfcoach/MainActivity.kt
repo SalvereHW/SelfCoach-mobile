@@ -1,4 +1,4 @@
-package com.example.selfcoach_mobile
+package com.salvere.selfcoach
 
 import io.flutter.embedding.android.FlutterActivity
 
