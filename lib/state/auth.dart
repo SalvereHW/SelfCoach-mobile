@@ -54,10 +54,13 @@ class AppAuthState extends ChangeNotifier {
         final Session? session = data.session;
         
         if (event == AuthChangeEvent.signedIn && session != null) {
-          _supabaseUser = session.user;
-          _loadUserProfile();
-          _setStatus(AuthStatus.authenticated);
-          _onAuthenticationChanged();
+          // Add a small delay to prevent navigation conflicts
+          Future.delayed(const Duration(milliseconds: 100), () {
+            _supabaseUser = session.user;
+            _loadUserProfile();
+            _setStatus(AuthStatus.authenticated);
+            _onAuthenticationChanged();
+          });
         } else if (event == AuthChangeEvent.signedOut) {
           _supabaseUser = null;
           _userProfile = null;

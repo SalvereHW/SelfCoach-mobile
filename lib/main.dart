@@ -68,11 +68,20 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => WellnessState()),
         ChangeNotifierProvider(create: (_) => AiInsightsState()),
       ],
-      child: MaterialApp.router(
-        title: 'SelfCoach - Holistic Wellness',
-        theme: AppTheme.lightTheme,
-        themeMode: ThemeMode.light,
-        routerConfig: _router,
+      child: Consumer<app_auth.AppAuthState>(
+        builder: (context, authState, child) {
+          // Trigger router refresh when auth state changes
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _RouterRefreshStream().refresh();
+          });
+          
+          return MaterialApp.router(
+            title: 'SelfCoach - Holistic Wellness',
+            theme: AppTheme.lightTheme,
+            themeMode: ThemeMode.light,
+            routerConfig: _router,
+          );
+        },
       ),
     );
   }
@@ -92,6 +101,7 @@ class _RouterRefreshStream extends ChangeNotifier {
 // Define the GoRouter configuration
 final _router = GoRouter(
   refreshListenable: _RouterRefreshStream(),
+  debugLogDiagnostics: kDebugMode,
   routes: [
     GoRoute(
       path: '/',
@@ -100,12 +110,13 @@ final _router = GoRouter(
           builder: (context, authState, child) {
 
             if (kDebugMode) {
-              print('Auth status: ${authState.status}');
-              print('Is authenticated: ${authState.isAuthenticated}');
-              print('User ID: ${authState.userId}');
+              print('Router: Auth status: ${authState.status}');
+              print('Router: Is authenticated: ${authState.isAuthenticated}');
+              print('Router: User ID: ${authState.userId}');
+              print('Router: Loading: ${authState.isLoading}');
             }
             
-            if (authState.status == app_auth.AuthStatus.loading) {
+            if (authState.status == app_auth.AuthStatus.loading || authState.isLoading) {
               return const Scaffold(
                 body: Center(child: CircularProgressIndicator()),
               );
@@ -125,13 +136,22 @@ final _router = GoRouter(
                 
                 // If user hasn't seen onboarding, show it first
                 if (!hasSeenOnboarding) {
+                  if (kDebugMode) {
+                    print('Router: Showing onboarding screen');
+                  }
                   return const OnboardingScreen();
                 }
                 
                 // Otherwise, follow normal auth flow
                 if (authState.isAuthenticated) {
+                  if (kDebugMode) {
+                    print('Router: Showing dashboard - user is authenticated');
+                  }
                   return const DashboardScreen();
                 } else {
+                  if (kDebugMode) {
+                    print('Router: Showing welcome screen - user not authenticated');
+                  }
                   return const WelcomeScreen();
                 }
               },

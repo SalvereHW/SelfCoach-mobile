@@ -6,7 +6,6 @@ import '../state/auth.dart' as app_auth;
 import '../design_system/app_colors.dart';
 import '../design_system/typography.dart';
 import '../widgets/button.dart';
-import 'dashboard.dart';
 
 class AuthScreen extends StatefulWidget {
   final bool isSignUp;
@@ -58,21 +57,21 @@ class _AuthScreenState extends State<AuthScreen> {
         );
       }
 
-      if (success && mounted) {
-        if (kIsWeb) {
-          context.go('/dashboard');
+      if (mounted) {
+        if (success) {
+          // Let the auth state change listener handle navigation automatically
+          // Don't manually navigate here to avoid conflicts
+          if (kDebugMode) {
+            print('Authentication successful, waiting for auth state change...');
+          }
         } else {
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => const DashboardScreen()),
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(authState.errorMessage ?? 'Authentication failed'),
+              backgroundColor: Colors.red,
+            ),
           );
         }
-      } else if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(authState.errorMessage ?? 'Authentication failed'),
-            backgroundColor: Colors.red,
-          ),
-        );
       }
     } catch (e) {
       if (mounted) {
